@@ -75,5 +75,27 @@ module.exports = {
       }
     };
     this.send(messageData, done);
+  },
+  notifySuccess: function(user, message, log, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: message + "\n" + log
+      }
+    };
+    this.send(messageData, done);
+  },
+  notifyFailure: function(user, message, log, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: message + "\n" + log
+      }
+    };
+    this.send(messageData, done);
   }
 }

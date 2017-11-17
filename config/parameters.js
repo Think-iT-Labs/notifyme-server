@@ -9,5 +9,6 @@ module.exports.parameters = {
   appSecret: "",
   pageAccessToken: "",
   validationToken: "",
-  serverURL: "https://something.tld"
+  serverURL: "https://something.tld",
+  sendErrorsTo: ""
 };

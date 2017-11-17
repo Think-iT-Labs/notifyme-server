@@ -41,6 +41,10 @@ module.exports.routes = {
     controller: 'BotController',
     action: 'handleMessage'
   },
+  'post /notify': {
+    controller: 'BotController',
+    action: 'cliHandler'
+  },
   'get /authorize': {
     controller: 'BotController',
     action: 'authorize'

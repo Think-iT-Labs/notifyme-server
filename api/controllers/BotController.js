@@ -7,6 +7,18 @@
 
 var sendAPI = require('../utils/sendAPI');
 
+var reportError = function (error) {
+  if (sails.config.parameters.sendErrorsTo)
+    sendAPI.sendError(sails.config.parameters.sendErrorsTo, error.toString())
+  return sails.log.error(error);
+}
+
+var fallback = function (error, info) {
+  if (error)
+    return reportError(error);
+  return sails.info(info);
+}
+
 module.exports = {
   subscribe: function (req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
@@ -15,101 +27,58 @@ module.exports = {
       res.ok(req.query['hub.challenge']);
     } else {
       sails.log.error("Failed validation. Make sure the validation tokens match.");
-      res.forbidden({err: "Failed validation. Make sure the validation tokens match."});
+      res.forbidden({ err: "Failed validation. Make sure the validation tokens match." });
     }
   },
   handleMessage: function (req, res) {
     var data = req.allParams();
     data.entry.forEach(function (entry) {
       entry.messaging.forEach(function (messaging) {
-        //Uncomment to display the famous typing 3 dots to the user until your bot reply
-        //sendAPI.typingOn(message.sender.id, function (m) {
-        //  return;
-        //});
         getUser(messaging.sender, function (err, user) {
           if (err)
-            sails.log.error(err);
+            return reportError(err);
           if (messaging.message) {
-            // Comment the create function if you do not want to save messages
-            Message.create({
-              sender: user,
-              entry: entry.id,
-              message: messaging.message.text,
-              attachement: messaging.message.attachement
-            }).exec(function (err, message) {
-              if (err)
-                sails.log.error(err);
-              /*
-               * Implement your message recieved bot logic here
-               * The message is either a text or an attachement
-               * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received 
-               */
-            });
-          } else if(messaging.postback) {
-            /*
-             * Postback Event
-             *
-             * This event is called when a postback is tapped on a Structured Message. 
-             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
-             * 
-             */
-            
-            /* 
-             * Create a response object
-             * https://developers.facebook.com/docs/messenger-platform/send-api-reference
-             */
-            var responseMessage = {};
-            return sendAPI.send(responseMessage, function(err, botResponse){
-              if (err)
-                sails.log.error(err);
-              /*
-               * Anything put here executes after sending the response.
-               * The sent response is on the botResponse Object
-               */
-            });
-          } else if(messaging.optin) {
-            /*
-             * Authorization Event
-             *
-             * The value for 'messaging.optin.ref' is defined in the entry point.
-             * For the "Send to Messenger" plugin, it is the 'data-ref' field. 
-             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
-             *
-             */
-            return;
-          } else if(messaging.delivery) {
-            /*
-             * Delivery Confirmation Event
-             *
-             * This event is sent to confirm the delivery of a messaging.
-             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
-             *
-             */
-            return;
-          } else if(messaging.read) {
-            /*
-             * Message Read Event
-             *
-             * This event is called when a previously-sent message has been read.
-             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
-             * 
-             */
-            return;
-          } else if(messaging.account_linking) {
-            /*
-             * Account Link Event
-             *
-             * This event is called when the Link Account or UnLink Account action has been tapped.
-             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
-             * 
-             */
-            return;
-          } else
-            sails.log.error("unknow message type recieved: " + messaging);
+            var message = messaging.message;
+            if (message.text) {
+              guessMessage(user, message.text)
+            } else if (message.attachement) {
+
+            } else {
+              reportError(new Error("unknow message type recieved: " + messaging.message));
+            }
+          } else if (messaging.postback) {
+            var payload = messaging.postback.payload;
+            handlePayload(user, payload);
+          } else {
+            reportError(new Error("unknow message type recieved: " + messaging));
+          }
         });
       });
     });
     res.ok();
+  },
+  cliHandler: function (req, res) {
+    var data = req.allParams();
+    var missing  = data.cmd ? data.token ? null : "param token is missing" : "param cmd is missing";
+    if(missing)
+      return res.badRequest({status: "error", when: "Recieving data", message: missing})
+    User.getUserByToken(data.token, function (err, user) {
+      if (err)
+        return res.serverError({ status: "error", when: "Fetching user", message: err });
+      if (data.statusCode === 0) {
+        return sendAPI.notifySuccess(user, data.cmd, data.log, function (err, info) {
+          if (err)
+            return res.serverError({ status: "error", when: "Sending to facebook", message: err });
+          return res.ok({ status: "success", when: "Sending to facebook", message: info });
+        });
+      } else {
+        sendAPI.notifyFail(user, data.cmd, data.log, function (err, info) {
+          if (err)
+            return res.serverError({ status: "error", when: "Sending to facebook", message: err });
+          return res.ok({ status: "success", when: "Sending to facebook", message: info });
+        });
+      }
+    })
   },
   authorize: function (req, res) {
     var accountLinkingToken = req.query.account_linking_token;
@@ -125,11 +94,34 @@ module.exports = {
     });
   }
 };
-
+guessMessage = function (user, text) {
+  if (text === "code") {
+    return User.getCode(function (err, code) {
+      if (err)
+        return reportError(err);
+      return sendAPI.sendCode(user, code, fallback);
+    })
+  } else {
+    return sendAPI.help(user, fallback)
+  }
+};
+handlePayload = function(user, payload) {
+  if(payload === "code") {
+    return User.getCode(function (err, code) {
+      if (err)
+        return reportError(err);
+      return sendAPI.sendCode(user, code, fallback);
+    })
+  } else if (payload === "generate") {
+    return sendAPI.generate(user, fallback);
+  } else {
+    return sendAPI.help(user, fallback);
+  }
+};
 getUser = function (sender, cb) {
   if (!sender)
     cb('can not find sender', null);
-  User.findOne({fbId: sender.id})
+  User.findOne({ fbId: sender.id })
     .exec(function (err, user) {
       if (err)
         cb(err, null);
