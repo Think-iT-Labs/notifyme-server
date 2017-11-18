@@ -72,7 +72,7 @@ module.exports = {
         return res.serverError({ status: "error", when: "Fetching user", message: err });
       if(!user)
         return res.notFound({ status: "error", when: "Fetching user", message: 'user not found' });
-      if (data.statusCode === 0) {
+      if (data.exit_code === 0) {
         return sendAPI.notifySuccess(user, data.cmd, data.log, function (err, info) {
           if (err)
             return res.serverError({ status: "error", when: "Sending to facebook", message: err });
