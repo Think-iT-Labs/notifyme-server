@@ -120,7 +120,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifySuccess: function (user, cmd, log, done) {
+  notifySuccess: function (user, cmd, logs, done) {
     var imageUrl = sails.config.parameters.serverURL + '/images/success.png';
     var messageData = {
       recipient: {
@@ -142,7 +142,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifyFailure: function (user, cmd, log, done) {
+  notifyFailure: function (user, cmd, logs, done) {
     var imageUrl = sails.config.parameters.serverURL + '/images/error.png';
     var messageData = {
       recipient: {
