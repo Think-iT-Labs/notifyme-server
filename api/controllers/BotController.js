@@ -6,6 +6,7 @@
  */
 
 var sendAPI = require('../utils/sendAPI');
+var Base64 = require('js-base64').Base64;
 
 var fallback = function (err, info) {
   sails.log.info(new Date());
@@ -76,6 +77,7 @@ module.exports = {
   cliHandler: function (req, res) {
     var data = req.allParams();
     sails.log.info(data);
+    var logs = Base64.decode(data.logs);
     var missing = data.cmd ? data.token ? null : "param token is missing" : "param cmd is missing";
     if (missing)
       return res.badRequest({ status: "error", when: "Recieving data", message: missing })
@@ -85,13 +87,13 @@ module.exports = {
       if(!user)
         return res.notFound({ status: "error", when: "Fetching user", message: 'user not found' });
       if (data.exit_code === 0) {
-        return sendAPI.notifySuccess(user, data.cmd, data.logs, function (err, info) {
+        return sendAPI.notifySuccess(user, data.cmd, logs, function (err, info) {
           if (err)
             return res.serverError({ status: "error", when: "Sending to facebook", message: err });
           return res.ok({ status: "success", when: "Sending to facebook", message: info });
         });
       } else {
-        sendAPI.notifyFailure(user, data.cmd, data.logs, function (err, info) {
+        sendAPI.notifyFailure(user, data.cmd, logs, function (err, info) {
           if (err)
             return res.serverError({ status: "error", when: "Sending to facebook", message: err });
           return res.ok({ status: "success", when: "Sending to facebook", message: info });
