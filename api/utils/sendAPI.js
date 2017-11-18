@@ -76,7 +76,7 @@ module.exports = {
       this.send(messageDataAdmin, done);
     }
   },
-  unreconizedCall: function(user, type, value, done){
+  unreconizedCall: function (user, type, value, done) {
     var messageData = {
       recipient: {
         id: user.fbId
@@ -121,28 +121,50 @@ module.exports = {
     this.send(messageData, done);
   },
   notifySuccess: function (user, cmd, log, done) {
+    var imageUrl = sails.config.parameters.serverURL + '/images/success.png';
     var messageData = {
       recipient: {
         id: user.fbId
       },
       message: {
-        text: cmd + ":\n" + log
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [{
+              title: cmd,
+              image_url: imageUrl,
+              subtitle: logs
+            }]
+          }
+        }
       }
     };
     this.send(messageData, done);
   },
   notifyFailure: function (user, cmd, log, done) {
+    var imageUrl = sails.config.parameters.serverURL + '/images/error.png';
     var messageData = {
       recipient: {
         id: user.fbId
       },
       message: {
-        text: cmd + ":\n" + log
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [{
+              title: cmd,
+              image_url: imageUrl,
+              subtitle: logs
+            }]
+          }
+        }
       }
     };
     this.send(messageData, done);
   },
-  sendCode: function(user, done) {
+  sendCode: function (user, done) {
     var messageData = {
       recipient: {
         id: user.fbId
@@ -153,7 +175,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  help: function(user, done) {
+  help: function (user, done) {
     var messageData = {
       recipient: {
         id: user.fbId
