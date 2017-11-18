@@ -126,7 +126,7 @@ module.exports = {
         id: user.fbId
       },
       message: {
-        text: message + "\n" + log
+        text: cmd + ":\n" + log
       }
     };
     this.send(messageData, done);
@@ -137,7 +137,7 @@ module.exports = {
         id: user.fbId
       },
       message: {
-        text: message + "\n" + log
+        text: cmd + ":\n" + log
       }
     };
     this.send(messageData, done);
