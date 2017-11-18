@@ -21,7 +21,14 @@ var reportError = function (user, err) {
 var unreconizedCall = function (user, type, value) {
   sails.log.warn("Recieved unkown `" + type + "`:");
   sails.log.info(value);
-  //return sendAPI.unreconizedCall(user, type, value, fallback);
+};
+
+var messageRead = function (user, read) {
+  sails.log.info("Message read by: " + user.first_name + " " + user.last_name + " at " + new Date().toDateString());
+};
+
+var messageDelivery = function (user, delivery) {
+  sails.log.info("Message delivered to: " + user.first_name + " " + user.last_name + " at " + new Date().toDateString());
 };
 
 module.exports = {
@@ -54,6 +61,10 @@ module.exports = {
           } else if (messaging.postback) {
             var payload = messaging.postback.payload;
             handlePayload(user, payload);
+          } else if(messaging.delivery) {
+            messageDelivery(user, messaging.delivery);
+          } else if(messaging.read) {
+            messageRead(user, messaging.read);
           } else {
             unreconizedCall(user, "messaging", messaging);
           }
