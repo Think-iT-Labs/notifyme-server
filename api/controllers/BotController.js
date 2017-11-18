@@ -21,7 +21,7 @@ var reportError = function (user, err) {
 var unreconizedCall = function (user, type, value) {
   sails.log.warn("Recieved unkown `" + type + "`:");
   sails.log.info(value);
-  return sendAPI.unreconizedCall(user, type, value, fallback);
+  //return sendAPI.unreconizedCall(user, type, value, fallback);
 };
 
 module.exports = {
