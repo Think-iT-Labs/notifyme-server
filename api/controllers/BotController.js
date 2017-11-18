@@ -79,7 +79,7 @@ module.exports = {
           return res.ok({ status: "success", when: "Sending to facebook", message: info });
         });
       } else {
-        sendAPI.notifyFail(user, data.cmd, data.log, function (err, info) {
+        sendAPI.notifyFailure(user, data.cmd, data.log, function (err, info) {
           if (err)
             return res.serverError({ status: "error", when: "Sending to facebook", message: err });
           return res.ok({ status: "success", when: "Sending to facebook", message: info });

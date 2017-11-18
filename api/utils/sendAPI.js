@@ -8,7 +8,7 @@ module.exports = {
       hostname: 'graph.facebook.com',
       port: 443,
       path: '/' + sails.config.parameters.fbApiVersion + '/me/messages',
-      qs: {access_token: sails.config.parameters.pageAccessToken},
+      qs: { access_token: sails.config.parameters.pageAccessToken },
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -54,6 +54,50 @@ module.exports = {
     };
     this.send(messageData, done);
   },
+  reportError: function (user, err, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: "Ooops, Something went wrong :( , this accident was reported!\nplease try again later."
+      }
+    };
+    this.send(messageData, done);
+    if (sails.config.parameters.sendErrorsTo) {
+      var messageDataAdmin = {
+        recipient: {
+          id: sails.config.parameters.sendErrorsTo
+        },
+        message: {
+          text: JSON.stringify(err)
+        }
+      };
+      this.send(messageDataAdmin, done);
+    }
+  },
+  unreconizedCall: function(user, type, value, done){
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: "Ooops, I was not built to understand this."
+      }
+    };
+    this.send(messageData, done);
+    if (sails.config.parameters.sendErrorsTo) {
+      var messageDataAdmin = {
+        recipient: {
+          id: sails.config.parameters.sendErrorsTo
+        },
+        message: {
+          text: "Recieved unkown `" + type + "`: " + value
+        }
+      };
+      this.send(messageDataAdmin, done);
+    }
+  },
   welcome: function (user, done) {
     var messageData = {
       recipient: {
@@ -66,17 +110,17 @@ module.exports = {
             template_type: "button",
             text: sails.config.parameters.helloMessage || "Hello, and welcome",
             buttons: [{
-                type: "postback",
-                title: "Start",
-                payload: "start"
-              }]
+              type: "postback",
+              title: "Start",
+              payload: "code"
+            }]
           }
         }
       }
     };
     this.send(messageData, done);
   },
-  notifySuccess: function(user, cmd, log, done) {
+  notifySuccess: function (user, cmd, log, done) {
     var messageData = {
       recipient: {
         id: user.fbId
@@ -87,13 +131,35 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifyFailure: function(user, cmd, log, done) {
+  notifyFailure: function (user, cmd, log, done) {
     var messageData = {
       recipient: {
         id: user.fbId
       },
       message: {
         text: message + "\n" + log
+      }
+    };
+    this.send(messageData, done);
+  },
+  sendCode: function(user, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: "your token is:\n" + user.userToken
+      }
+    };
+    this.send(messageData, done);
+  },
+  help: function(user, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: "I do not quite understand you"
       }
     };
     this.send(messageData, done);
