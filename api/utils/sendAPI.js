@@ -64,7 +64,7 @@ module.exports = {
           type: "template",
           payload: {
             template_type: "button",
-            text: "Hello, and welcome",
+            text: sails.config.parameters.helloMessage || "Hello, and welcome",
             buttons: [{
                 type: "postback",
                 title: "Start",
@@ -76,7 +76,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifySuccess: function(user, message, log, done) {
+  notifySuccess: function(user, cmd, log, done) {
     var messageData = {
       recipient: {
         id: user.fbId
@@ -87,7 +87,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifyFailure: function(user, message, log, done) {
+  notifyFailure: function(user, cmd, log, done) {
     var messageData = {
       recipient: {
         id: user.fbId

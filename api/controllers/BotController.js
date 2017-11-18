@@ -7,17 +7,22 @@
 
 var sendAPI = require('../utils/sendAPI');
 
-var reportError = function (error) {
-  if (sails.config.parameters.sendErrorsTo)
-    sendAPI.sendError(sails.config.parameters.sendErrorsTo, error.toString())
-  return sails.log.error(error);
-}
+var fallback = function (err, info) {
+  sails.log.info(new Date());
+  if (err)
+    return sails.log.error(err);
+  return sails.log.info(info);
+};
+var reportError = function (user, err) {
+  if (err)
+    return sendAPI.reportError(user, err, fallback);
+};
 
-var fallback = function (error, info) {
-  if (error)
-    return reportError(error);
-  return sails.info(info);
-}
+var unreconizedCall = function (user, type, value) {
+  sails.log.warn("Recieved unkown `" + type + "`:");
+  sails.log.info(value);
+  return sendAPI.unreconizedCall(user, type, value, fallback);
+};
 
 module.exports = {
   subscribe: function (req, res) {
@@ -36,7 +41,7 @@ module.exports = {
       entry.messaging.forEach(function (messaging) {
         getUser(messaging.sender, function (err, user) {
           if (err)
-            return reportError(err);
+            return sails.log.error(err);
           if (messaging.message) {
             var message = messaging.message;
             if (message.text) {
@@ -44,13 +49,13 @@ module.exports = {
             } else if (message.attachement) {
 
             } else {
-              reportError(new Error("unknow message type recieved: " + messaging.message));
+              unreconizedCall(user, "messaging.message", messaging.message);
             }
           } else if (messaging.postback) {
             var payload = messaging.postback.payload;
             handlePayload(user, payload);
           } else {
-            reportError(new Error("unknow message type recieved: " + messaging));
+            unreconizedCall(user, "messaging", messaging);
           }
         });
       });
@@ -59,12 +64,14 @@ module.exports = {
   },
   cliHandler: function (req, res) {
     var data = req.allParams();
-    var missing  = data.cmd ? data.token ? null : "param token is missing" : "param cmd is missing";
-    if(missing)
-      return res.badRequest({status: "error", when: "Recieving data", message: missing})
+    var missing = data.cmd ? data.token ? null : "param token is missing" : "param cmd is missing";
+    if (missing)
+      return res.badRequest({ status: "error", when: "Recieving data", message: missing })
     User.getUserByToken(data.token, function (err, user) {
       if (err)
         return res.serverError({ status: "error", when: "Fetching user", message: err });
+      if(!user)
+        return res.notFound({ status: "error", when: "Fetching user", message: 'user not found' });
       if (data.statusCode === 0) {
         return sendAPI.notifySuccess(user, data.cmd, data.log, function (err, info) {
           if (err)
@@ -96,24 +103,18 @@ module.exports = {
 };
 guessMessage = function (user, text) {
   if (text === "code") {
-    return User.getCode(function (err, code) {
-      if (err)
-        return reportError(err);
-      return sendAPI.sendCode(user, code, fallback);
-    })
+    return sendAPI.sendCode(user, fallback);
   } else {
     return sendAPI.help(user, fallback)
   }
 };
-handlePayload = function(user, payload) {
-  if(payload === "code") {
-    return User.getCode(function (err, code) {
-      if (err)
-        return reportError(err);
-      return sendAPI.sendCode(user, code, fallback);
-    })
+handlePayload = function (user, payload) {
+  if (payload === "code") {
+    return sendAPI.sendCode(user, fallback);
   } else if (payload === "generate") {
-    return sendAPI.generate(user, fallback);
+    user.generateCode(reportError, function(){
+      return sendAPI.sendCode(user, fallback);
+    });
   } else {
     return sendAPI.help(user, fallback);
   }

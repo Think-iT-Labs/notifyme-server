@@ -50,16 +50,19 @@ module.exports = {
     messages: {
       collection: 'message',
       via: 'sender'
+    },
+    generateCode : function(error, success) {
+      var that = this;
+      this.userToken = suid(16, 1451602800000, 10);
+      this.save(function (err) {
+        if (err)
+          return error(that, err);
+        success();
+      });
     }
   },
   getUserByToken: function(token, cb){
-    User.find({userToken: token}).exec(function(err, users){
-      if(err)
-        return cb(err, null);
-      if(!users.length)
-        return cb(new Error("no user were found using the token `" + token + "`"), null);
-      return cb(null, users[0]);
-    })
+    User.findOne({userToken: token}).exec(cb)
   },
   createFromFb: function (id, cb) {
     https = require('https');

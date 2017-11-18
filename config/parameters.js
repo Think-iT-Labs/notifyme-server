@@ -10,5 +10,6 @@ module.exports.parameters = {
   pageAccessToken: "",
   validationToken: "",
   serverURL: "https://something.tld",
-  sendErrorsTo: ""
+  sendErrorsTo: "",
+  helloMessage: ""
 };
