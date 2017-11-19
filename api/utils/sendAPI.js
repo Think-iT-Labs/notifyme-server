@@ -148,7 +148,16 @@ module.exports = {
                 messenger_extensions: true,
                 webview_height_ratio: "tall",
                 fallback_url: sails.config.parameters.serverURL + '/cli/' + cli.id
-              }
+              },
+              buttons: [
+                {
+                  type: "web_url",
+                  url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+                  messenger_extensions: true,
+                  webview_height_ratio: "tall",
+                  fallback_url: sails.config.parameters.serverURL + '/cli/' + cli.id
+                }
+              ]
             }]
           }
         }
