@@ -12,7 +12,7 @@ module.exports = {
         return res.serverError(err);
       if (!cli)
         return res.notFound();
-      res.render('cli/display', cli);
+      res.render('cli/display', {cli: cli});
     })
   }
 };
