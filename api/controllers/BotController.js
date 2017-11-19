@@ -93,7 +93,7 @@ module.exports = {
       Cli.fromEndpoint(user, data, function (err, cli) {
         if (err)
           return res.serverError({ status: "error", when: "Persisting the Command", message: err });
-        if (cli.exit_code === 0) {
+        if (cli.exitCode === 0) {
           return sendAPI.notifySuccess(user, cli.cmd, cli.logs, function (err, info) {
             if (err)
               return res.serverError({ status: "error", when: "Sending to facebook", message: err });

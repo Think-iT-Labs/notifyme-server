@@ -92,7 +92,7 @@ module.exports = {
           id: sails.config.parameters.sendErrorsTo
         },
         message: {
-          text: "Recieved unkown `" + type + "`: " + value
+          text: "Recieved unkown *`" + type + "`*: " + value
         }
       };
       this.send(messageDataAdmin, done);
@@ -183,6 +183,7 @@ module.exports = {
     this.send(messageData, done);
   },
   help: function (user, done) {
+    var that = this;
     var messageData = {
       recipient: {
         id: user.fbId
@@ -192,7 +193,7 @@ module.exports = {
           type: "template",
           payload: {
             template_type: "button",
-            text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\n\nYou can then get your token and configure me from the menu or the buttons bellow 👇\n\nTo get a new token please type `generate`",
+            text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\n\nTo display your token you can type *`token`*\n\nTo get a new token please type *`generate`*\n\nOr use the menu 👇 bellow",
             buttons: [{
               type: "web_url",
               url: sails.config.parameters.serverURL + "/howto",
@@ -207,7 +208,7 @@ module.exports = {
     this.send(messageData, function(err, sent){
       if(err)
         return done(err, null)
-      return this.helpQuick(user, done);
+      return that.helpQuick(user, done);
     });
   },
   helpQuick: function (user, done) {

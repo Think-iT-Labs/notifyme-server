@@ -1,13 +1,13 @@
 var phrases = {
   greeting: [
     "🙌 Hi, my name is notifyMe Bot",
-    "Hello ✋, is my aide required? if so please type help or aide",
+    "Hello ✋, is my aide required? if so please type *`help`* or aide",
     "🙋 Horraaa, keep calm and get notified!"
   ],
   unreconized: [
-    "I am sorry 😕 I can't understand you, would you like some help? if so please type help",
-    "🙇 I didn't get it sorry, please check the help by typing help",
-    "Please 🙏, type help to display what I can do "
+    "I am sorry 😕 I can't understand you, would you like some help? if so please type *`help`*",
+    "🙇 I didn't get it sorry, please check the help by typing *`help`*",
+    "Please 🙏, type *`help`* to display what I can do "
   ],
   maker: [
     "Tunisian guys made me!",
