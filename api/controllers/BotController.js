@@ -60,7 +60,7 @@ module.exports = {
             } else if (message.text) {
               return guessMessage(user, message.text)
             } else if (message.attachement) {
-
+              return sendAPI.text(user, 'I can not handle Media, well not yet :p', fallback);
             } else {
               return unreconizedCall(user, "messaging.message", messaging.message);
             }
@@ -124,15 +124,15 @@ module.exports = {
   }
 };
 guessMessage = function (user, text) {
-  if (text.match(/^(code)|(token)\s/i)) {
+  if (text.match(/^(code)|(token)/i)) {
     return sendAPI.sendCode(user, fallback);
-  } else if(text.match(/^(hi|hello)\s/i)){
+  } else if(text.match(/^(hi)|(hello)/i)){
     return sendAPI.text(user, getPhrase('greeting'), fallback);
-  } else if(text.match(/(ma[d|k]e|buil[t|d]) you\s/i)){
+  } else if(text.match(/(ma[d|k]e)|(buil[t|d]) you/i)){
     return sendAPI.text(user, getPhrase('maker'), fallback);
-  } else if(text.match(/^(help|aide)\s/i)){
+  } else if(text.match(/^(help)|(aide)/i)){
     return sendAPI.help(user, fallback)
-  } else if(text.match(/^(about|more)\s/i)){
+  } else if(text.match(/^(about)|(more)/i)){
     return sendAPI.text(user, getPhrase('about'), fallback);
   } else {
     return sendAPI.text(user, getPhrase('unreconized'), fallback);
