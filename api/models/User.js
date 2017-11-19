@@ -53,11 +53,11 @@ module.exports = {
     }
   },
   generateCode: function (user, error, success) {
-    User.update({ id: user.id }, { userToken: suid(16, 1451602800000, 10) }).exec(function (err, users) {
+    User.update({ fbId: user.fbId }, { userToken: suid(16, 1451602800000, 10) }).exec(function (err, users) {
       if (err)
         return error(user, err);
       if (!users.length)
-        return error(user, new Error('User not found'))
+        return error(user, {error: 'User not found'})
       return success(users[0])
     })
   },
