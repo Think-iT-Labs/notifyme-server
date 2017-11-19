@@ -164,7 +164,7 @@ module.exports = {
               title: cli.cmd,
               image_url: imageUrl,
               subtitle: cli.logs,
-              default_action = {
+              default_action: {
                 type: "web_url",
                 url: sails.config.parameters.serverURL + '/cli/' + cli.id,
                 messenger_extensions: true,
