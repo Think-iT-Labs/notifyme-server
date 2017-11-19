@@ -54,22 +54,25 @@ module.exports = {
             return sails.log.error(err);
           if (messaging.message) {
             var message = messaging.message;
-            if (message.text) {
-              guessMessage(user, message.text)
+            if (message.quick_reply) {
+              var payload = message.quick_reply.payload;
+              return handlePayload(user, payload);
+            } else if (message.text) {
+              return guessMessage(user, message.text)
             } else if (message.attachement) {
 
             } else {
-              unreconizedCall(user, "messaging.message", messaging.message);
+              return unreconizedCall(user, "messaging.message", messaging.message);
             }
           } else if (messaging.postback) {
             var payload = messaging.postback.payload;
-            handlePayload(user, payload);
+            return handlePayload(user, payload);
           } else if (messaging.delivery) {
-            messageDelivery(user, messaging.delivery);
+            return messageDelivery(user, messaging.delivery);
           } else if (messaging.read) {
-            messageRead(user, messaging.read);
+            return messageRead(user, messaging.read);
           } else {
-            unreconizedCall(user, "messaging", messaging);
+            return unreconizedCall(user, "messaging", messaging);
           }
         });
       });
@@ -123,12 +126,14 @@ module.exports = {
 guessMessage = function (user, text) {
   if (text.match(/^(code)|(token)\s/i)) {
     return sendAPI.sendCode(user, fallback);
-  } else if(text.match(/^(hi)|(hello)\s/i)){
+  } else if(text.match(/^(hi|hello)\s/i)){
     return sendAPI.text(user, getPhrase('greeting'), fallback);
-  } else if(text.match(/(ma[d|k]e you)|(buil[t|d] you)\s/i)){
+  } else if(text.match(/(ma[d|k]e|buil[t|d]) you\s/i)){
     return sendAPI.text(user, getPhrase('maker'), fallback);
-  } else if(text.match(/^(help)|(aide)\s/i)){
+  } else if(text.match(/^(help|aide)\s/i)){
     return sendAPI.help(user, fallback)
+  } else if(text.match(/^(about|more)\s/i)){
+    return sendAPI.text(user, getPhrase('about'), fallback);
   } else {
     return sendAPI.text(user, getPhrase('unreconized'), fallback);
   }

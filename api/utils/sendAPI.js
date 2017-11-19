@@ -110,11 +110,6 @@ module.exports = {
             content_type: "text",
             title: "🔑 Get a Token",
             payload: "code"
-          },
-          {
-            content_type: "text",
-            title: "🔧 Setup",
-            payload: "setup"
           }
         ]
       }
@@ -193,17 +188,39 @@ module.exports = {
         id: user.fbId
       },
       message: {
-        text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\nYou can then get your token and configure me from the menu or the buttons bellow 👇\nTo get a new token please type `generate`",
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "button",
+            text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\n\nYou can then get your token and configure me from the menu or the buttons bellow 👇\n\nTo get a new token please type `generate`",
+            buttons: [{
+              type: "web_url",
+              url: sails.config.parameters.serverURL + "/howto",
+              title: "More",
+              webview_height_ratio: "compact",
+              webview_share_button: "hide"  
+            }]
+          }
+        }
+      }
+    };
+    this.send(messageData, function(err, sent){
+      if(err)
+        return done(err, null)
+      return this.helpQuick(user, done);
+    });
+  },
+  helpQuick: function (user, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
         quick_replies: [
           {
             content_type: "text",
             title: "🔑 Get a Token",
             payload: "code"
-          },
-          {
-            content_type: "text",
-            title: "🔧 Setup",
-            payload: "setup"
           },
           {
             content_type: "text",
