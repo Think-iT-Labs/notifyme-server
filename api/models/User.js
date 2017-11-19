@@ -50,19 +50,19 @@ module.exports = {
     messages: {
       collection: 'message',
       via: 'sender'
-    },
-    generateCode : function(error, success) {
-      var that = this;
-      this.userToken = suid(16, 1451602800000, 10);
-      this.save(function (err) {
-        if (err)
-          return error(that, err);
-        success();
-      });
     }
   },
-  getUserByToken: function(token, cb){
-    User.findOne({userToken: token}).exec(cb)
+  generateCode: function (user, error, success) {
+    User.update({ id: user.id }, { userToken: suid(16, 1451602800000, 10) }).exec(function (err, users) {
+      if (err)
+        return error(user, err);
+      if (!users.length)
+        return error(user, new Error('User not found'))
+      return success(users[0])
+    })
+  },
+  getUserByToken: function (token, cb) {
+    User.findOne({ userToken: token }).exec(cb)
   },
   createFromFb: function (id, cb) {
     https = require('https');

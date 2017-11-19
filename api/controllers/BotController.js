@@ -130,7 +130,7 @@ handlePayload = function (user, payload) {
   if (payload === "code") {
     return sendAPI.sendCode(user, fallback);
   } else if (payload === "generate") {
-    user.generateCode(reportError, function () {
+    User.generateCode(user, reportError, function (user) {
       return sendAPI.sendCode(user, fallback);
     });
   } else {
