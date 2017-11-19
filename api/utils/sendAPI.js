@@ -149,7 +149,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifyFailure: function (user, cmd, logs, done) {
+  notifyFailure: function (user, cli, done) {
     var imageUrl = sails.config.parameters.serverURL + '/images/error.png';
     var messageData = {
       recipient: {
@@ -161,9 +161,16 @@ module.exports = {
           payload: {
             template_type: "generic",
             elements: [{
-              title: cmd,
+              title: cli.cmd,
               image_url: imageUrl,
-              subtitle: logs
+              subtitle: cli.logs,
+              default_action = {
+                type: "web_url",
+                url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+                messenger_extensions: true,
+                webview_height_ratio: "tall",
+                fallback_url: sails.config.parameters.serverURL + '/cli/' + cli.id
+              }
             }]
           }
         }
@@ -199,14 +206,14 @@ module.exports = {
               url: sails.config.parameters.serverURL + "/howto",
               title: "More",
               webview_height_ratio: "compact",
-              webview_share_button: "hide"  
+              webview_share_button: "hide"
             }]
           }
         }
       }
     };
-    this.send(messageData, function(err, sent){
-      if(err)
+    this.send(messageData, function (err, sent) {
+      if (err)
         return done(err, null)
       return that.helpQuick(user, done);
     });

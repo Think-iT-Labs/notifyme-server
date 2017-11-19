@@ -94,13 +94,13 @@ module.exports = {
         if (err)
           return res.serverError({ status: "error", when: "Persisting the Command", message: err });
         if (cli.exitCode === 0) {
-          return sendAPI.notifySuccess(user, cli.cmd, cli.logs, function (err, info) {
+          return sendAPI.notifySuccess(user, cli, function (err, info) {
             if (err)
               return res.serverError({ status: "error", when: "Sending to facebook", message: err });
             return res.ok({ status: "success", when: "Sending to facebook", message: info });
           });
         } else {
-          sendAPI.notifyFailure(user, cli.cmd, cli.logs, function (err, info) {
+          sendAPI.notifyFailure(user, cli, function (err, info) {
             if (err)
               return res.serverError({ status: "error", when: "Sending to facebook", message: err });
             return res.ok({ status: "success", when: "Sending to facebook", message: info });
