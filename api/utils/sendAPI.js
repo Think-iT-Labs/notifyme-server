@@ -225,7 +225,7 @@ module.exports = {
           type: "template",
           payload: {
             template_type: "button",
-            text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\n\nTo display your token you can type *`token`*\n\nTo get a new token please type *`generate`*\n\nOr use the menu 👇 bellow",
+            text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\n\nTo display your token you can type *`token`*\n\nTo get a new token please type *`generate`*",
             buttons: [{
               type: "web_url",
               url: sails.config.parameters.serverURL + "/howto",
@@ -249,6 +249,7 @@ module.exports = {
         id: user.fbId
       },
       message: {
+        text: "Or use the menu 👇 bellow",
         quick_replies: [
           {
             content_type: "text",
