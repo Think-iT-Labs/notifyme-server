@@ -104,18 +104,30 @@ module.exports = {
         id: user.fbId
       },
       message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: sails.config.parameters.helloMessage || "Hello, and welcome",
-            buttons: [{
-              type: "postback",
-              title: "Start",
-              payload: "code"
-            }]
+        text: "Hello developer, my name is notifyMe :)\n\nI provide you with realtime notifications about command line you execute 8)\nTo be able to use me you need first to follow some few steps at " + sails.config.parameters.serverURL + "\n\nDo not forget to check the menu 👇 for additional actions",
+        quick_replies: [
+          {
+            content_type: "text",
+            title: "🔑 Get a Token",
+            payload: "code"
+          },
+          {
+            content_type: "text",
+            title: "🔧 Setup",
+            payload: "setup"
           }
-        }
+        ]
+      }
+    };
+    this.send(messageData, done);
+  },
+  text: function (user, text, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: text
       }
     };
     this.send(messageData, done);
@@ -170,7 +182,7 @@ module.exports = {
         id: user.fbId
       },
       message: {
-        text: "your token is:\n" + user.userToken
+        text: "Your token is:\n" + user.userToken
       }
     };
     this.send(messageData, done);
@@ -181,7 +193,24 @@ module.exports = {
         id: user.fbId
       },
       message: {
-        text: "I do not quite understand you"
+        text: "To use me, you need to get notifyme CLI at " + sails.config.parameters.serverURL + "/downloads\nYou can then get your token and configure me from the menu or the buttons bellow 👇\nTo get a new token please type `generate`",
+        quick_replies: [
+          {
+            content_type: "text",
+            title: "🔑 Get a Token",
+            payload: "code"
+          },
+          {
+            content_type: "text",
+            title: "🔧 Setup",
+            payload: "setup"
+          },
+          {
+            content_type: "text",
+            title: "♻ Generate",
+            payload: "generate"
+          }
+        ]
       }
     };
     this.send(messageData, done);

@@ -6,6 +6,7 @@
  */
 
 var sendAPI = require('../utils/sendAPI');
+var getPhrase = require('../utils/phrases');
 
 var fallback = function (err, info) {
   sails.log.info(new Date());
@@ -120,10 +121,16 @@ module.exports = {
   }
 };
 guessMessage = function (user, text) {
-  if (text === "code") {
+  if (text.match(/^(code)|(token)\s/i)) {
     return sendAPI.sendCode(user, fallback);
-  } else {
+  } else if(text.match(/^(hi)|(hello)\s/i)){
+    return sendAPI.text(user, getPhrase('greeting'), fallback);
+  } else if(text.match(/(ma[d|k]e you)|(buil[t|d] you)\s/i)){
+    return sendAPI.text(user, getPhrase('maker'), fallback);
+  } else if(text.match(/^(help)|(aide)\s/i)){
     return sendAPI.help(user, fallback)
+  } else {
+    return sendAPI.text(user, getPhrase('unreconized'), fallback);
   }
 };
 handlePayload = function (user, payload) {

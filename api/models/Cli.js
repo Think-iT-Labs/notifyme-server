@@ -29,7 +29,7 @@ module.exports = {
       executer: user,
       cmd: data.cmd,
       exitCode: data.exit_code,
-      logs: data.logs? Base64.decode(data.logs) : "The Cmd didn't print anything"
+      logs: data.logs? Base64.decode(data.logs) : "The command didn't print anything"
     }).exec(cb);
   }
 };
