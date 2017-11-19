@@ -127,7 +127,7 @@ module.exports = {
     };
     this.send(messageData, done);
   },
-  notifySuccess: function (user, cmd, logs, done) {
+  notifySuccess: function (user, cli, done) {
     var imageUrl = sails.config.parameters.serverURL + '/images/success.png';
     var messageData = {
       recipient: {
@@ -139,9 +139,16 @@ module.exports = {
           payload: {
             template_type: "generic",
             elements: [{
-              title: cmd,
+              title: cli.cmd,
               image_url: imageUrl,
-              subtitle: logs
+              subtitle: cli.logs,
+              default_action: {
+                type: "web_url",
+                url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+                messenger_extensions: true,
+                webview_height_ratio: "tall",
+                fallback_url: sails.config.parameters.serverURL + '/cli/' + cli.id
+              }
             }]
           }
         }
