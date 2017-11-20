@@ -203,6 +203,103 @@ module.exports = {
     };
     this.send(messageData, done);
   },
+  history: function (user, clis, page, done) {
+    var imageUrl = sails.config.parameters.serverURL;
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: "No more commands where found"
+      }
+    };
+    if (clis.length === 1) {
+      var cli = clis[0];
+      messageData = {
+        recipient: {
+          id: user.fbId
+        },
+        message: {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "generic",
+              elements: [{
+                title: cli.cmd,
+                image_url: cli.exitCode ? imageUrl + '/images/error.png' : imageUrl + '/images/success.png',
+                subtitle: cli.logs,
+                default_action: {
+                  type: "web_url",
+                  url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+                  messenger_extensions: true,
+                  webview_height_ratio: "tall"
+                },
+                buttons: [
+                  {
+                    title: "More",
+                    type: "web_url",
+                    url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+                    messenger_extensions: true,
+                    webview_height_ratio: "tall",
+                    fallback_url: sails.config.parameters.serverURL + '/cli/' + cli.id
+                  }
+                ]
+              }]
+            }
+          }
+        }
+      };
+    } else {
+      var elements = [];
+      for (var i = 0; i < clis.length; i++) {
+        var cli = clis[i];
+        elements.push({
+          title: cli.cmd,
+          image_url: cli.exitCode ? imageUrl + '/images/error.png' : imageUrl + '/images/success.png',
+          subtitle: cli.logs,
+          default_action: {
+            type: "web_url",
+            url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+            messenger_extensions: true,
+            webview_height_ratio: "tall"
+          },
+          buttons: [
+            {
+              title: "More",
+              type: "web_url",
+              url: sails.config.parameters.serverURL + '/cli/' + cli.id,
+              messenger_extensions: true,
+              webview_height_ratio: "tall",
+              fallback_url: sails.config.parameters.serverURL + '/cli/' + cli.id
+            }
+          ]
+        });
+      }
+      messageData = {
+        recipient: {
+          id: user.fbId
+        },
+        message: {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "list",
+              top_element_style: "compact",
+              elements: elements,
+              buttons: [
+                {
+                  title: "Previous Commands",
+                  type: "postback",
+                  payload: 'history' + ":" + (page + 1)
+                }
+              ]
+            }
+          }
+        }
+      };
+    }
+    this.send(messageData, done);
+  },
   sendCode: function (user, done) {
     var messageData = {
       recipient: {
@@ -255,12 +352,12 @@ module.exports = {
         quick_replies: [
           {
             content_type: "text",
-            title: "🔑 Get a Token",
+            title: "🔑 Get my Token",
             payload: "code"
           },
           {
             content_type: "text",
-            title: "♻ Generate",
+            title: "♻ Generate a new one",
             payload: "generate"
           }
         ]

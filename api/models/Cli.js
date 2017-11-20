@@ -31,6 +31,14 @@ module.exports = {
       exitCode: data.exit_code,
       logs: data.logs? Base64.decode(data.logs) : "The command didn't print anything"
     }).exec(cb);
+  },
+  history: function(user, page, error, success) {
+    Cli.find({executer: user.id}).sort('updatedAt DESC').limit(4).skip(page * 4)
+    .exec(function (err, clis) {
+      if (err)
+        return error(user, err);
+      success(clis);
+    })
   }
 };
 

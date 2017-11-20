@@ -145,6 +145,11 @@ handlePayload = function (user, payload) {
     User.generateCode(user, reportError, function (user) {
       return sendAPI.sendCode(user, fallback);
     });
+  } else if (payload.match(/^history/)) {
+    var page = parseInt(payload.split(':')[1]);
+    Cli.history(user, page, reportError, function (clis) {
+      return sendAPI.history(user, clis, fallback);
+    });
   } else {
     return sendAPI.help(user, fallback);
   }
