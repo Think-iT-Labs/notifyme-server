@@ -249,7 +249,7 @@ module.exports = {
           }
         }
       };
-    } else {
+    } else if(clis.length > 1){
       var elements = [];
       for (var i = 0; i < clis.length; i++) {
         var cli = clis[i];
