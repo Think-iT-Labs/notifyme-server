@@ -230,8 +230,10 @@ module.exports = {
               type: "web_url",
               url: sails.config.parameters.serverURL + "/howto",
               title: "More",
+              messenger_extensions: true,
               webview_height_ratio: "compact",
-              webview_share_button: "hide"
+              webview_share_button: "hide",
+              fallback_url: sails.config.parameters.serverURL + "/howto"
             }]
           }
         }
