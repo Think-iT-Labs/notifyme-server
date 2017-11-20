@@ -64,7 +64,8 @@ module.exports.routes = {
     action: 'dist'
   },
   'get /howto': {
-    view: 'howto'
+    controller: 'CliController',
+    action: 'howto'
   },
   'get /cli/:id': {
     controller: 'CliController',
