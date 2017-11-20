@@ -148,7 +148,7 @@ handlePayload = function (user, payload) {
   } else if (payload.match(/^history/)) {
     var page = parseInt(payload.split(':')[1]);
     Cli.history(user, page, reportError, function (clis) {
-      return sendAPI.history(user, clis, fallback);
+      return sendAPI.history(user, clis, page, fallback);
     });
   } else {
     return sendAPI.help(user, fallback);
