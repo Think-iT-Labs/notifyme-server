@@ -50,6 +50,10 @@ module.exports = {
     messages: {
       collection: 'message',
       via: 'sender'
+    },
+    commands: {
+      collection: 'cli',
+      via: 'executer'
     }
   },
   generateCode: function (user, error, success) {
