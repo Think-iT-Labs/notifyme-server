@@ -20,6 +20,18 @@ module.exports = {
     schema: true,
     connection: 'devMongodb',
     migrate: 'alter'
+  },
+  parameters: {
+    fbApiVersion: "v2.8",
+    appSecret: "aa",
+    pageAccessToken: "aa",
+    validationToken: "aa",
+    serverURL: "http://localhost",
+    sendErrorsTo: "",
+    helloMessage: ""
+  },
+  log: {
+    level: "verbose"
   }
 
 };

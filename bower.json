@@ -1,0 +1,24 @@
+{
+  "name": "notifyme-server",
+  "description": "Get notified about your CLI executions",
+  "main": "app.js",
+  "authors": [
+    "Bechir Nemlaghi", "Meher Assal"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/vendors",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.6.2",
+    "angular-route": "1.6.2",
+    "angular-resource": "1.6.2",
+    "materialize": "^0.100.2"
+  }
+}

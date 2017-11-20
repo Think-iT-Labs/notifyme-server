@@ -1,0 +1,10 @@
+.sticky {
+    margin-top: 0;
+    padding-top: 2.1rem;
+}
+.bigfoot {
+    padding-bottom: 2.1rem;
+}
+.collapsible-header.active {
+    background-color: #98d66d;
+}

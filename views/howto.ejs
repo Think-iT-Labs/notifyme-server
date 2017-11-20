@@ -1,0 +1,67 @@
+<div class="container">
+  <div class=row>
+    <div class="col s12">
+      <ul class="collapsible popout" data-collapsible="accordion">
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">cloud_download</i>Download</div>
+          <div class="collapsible-body">
+            <p>
+              NotifyMe-CLI is a simple command line, that you can use to get results about your executions.
+              <br> You can download the
+              <a href="https://github.com/Think-iT-Labs/notifyme" target="_blank">latest version here</a>.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">vpn_key</i>Get your token</div>
+          <div class="collapsible-body">
+            <p>
+              In order to get notifications you need to provide the CLI with a token, get yours from
+              <a href="https://m.me/clinotify.me"
+                target="_blank">NotifyMe Chat Bot</a>
+              <br> Type
+              <b>Token</b> to get your token.
+              <br> Whenever you think that your token was compromised you can regenerate it by typing
+              <b>generate</b>.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">settings</i>Configure</div>
+          <div class="collapsible-body">
+            Now that you have your token, edit your ~/.notifyme config file and add it to messenger_tokens list:
+            <pre class="black green-text">
+{
+    ...
+    "messenger_tokens": [
+        ...
+        "YOUR_TOKEN_HERE"
+    ],
+    ...
+}
+              </pre>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">notifications</i>Get notifications</div>
+          <div class="collapsible-body">
+            <p>
+              All set now whenever you execute
+              <p class="black green-text">$ notifyme command --args</p>
+              you will get notified within the <a href="https://m.me/clinotify.me" target="_blank">NotifyMe Chat Bot</a>
+            </p>
+            <p>
+              Usage example:
+              <br>
+              <p class="black green-text">$ notifyme git log</p>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

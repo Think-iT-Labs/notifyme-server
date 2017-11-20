@@ -14,6 +14,12 @@ module.exports = {
         return res.notFound();
       res.render('cli/display', {cli: cli});
     })
+  },
+  downloads: function(req, res) {
+    return res.redirect("https://github.com/Think-iT-Labs/notifyme");
+  },
+  dist: function(req, res) {
+    return res.redirect("https://github.com/Think-iT-Labs/notifyme");
   }
 };
 

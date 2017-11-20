@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%=typeof title == 'undefined' ? 'New Sails App' : title%></title>
 
-    <!-- Viewport mobile tag for sensible mobile support -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<head>
+  <title>
+    <%=typeof title == 'undefined' ? 'NotifyMe' : title%>
+  </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
-    <!--
+  <!--
         Stylesheets and Preprocessors
         ==============================
 
@@ -28,16 +31,50 @@
             + Use a different or additional preprocessor, like SASS, SCSS or Stylus
     -->
 
-    <!--STYLES-->
-    <!--STYLES END-->
-  </head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--STYLES-->
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/styles/materialize.css">
+  <link rel="stylesheet" href="/styles/overrides.css">
+  <!--STYLES END-->
+</head>
 
-  <body>
+<body>
+  <header>
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="/" class="brand-logo center hide-on-small-only">
+            <img src="/images/logo.png">
+          </a>
+          <a href="/" class="brand-logo hide-on-med-and-up">
+            <img src="/images/logo-mobile.png">
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <main>
     <%- body %>
-
-
-
-    <!--
+  </main>
+  <footer class="page-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col s6 left-align">
+          <a href="/policy">Policy</a>
+        </div>
+        <div class="col s6 right-align">
+          <a href="/terms">Terms of use</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+        © 2017 NotifyMe, All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <!--
         Client-side Templates
         ========================
 
@@ -58,11 +95,12 @@
               stringfile before they're served.
     -->
 
-    <!--TEMPLATES-->
-    <!--TEMPLATES END-->
+  <!--TEMPLATES-->
+  
+  <!--TEMPLATES END-->
 
 
-    <!--
+  <!--
 
       Client-side Javascript
       ========================
@@ -85,7 +123,18 @@
 
     -->
 
-    <!--SCRIPTS-->
-    <!--SCRIPTS END-->
-  </body>
+  <!--SCRIPTS-->
+  <script src="/vendors/jquery/dist/jquery.min.js"></script>
+  <script src="/vendors/materialize/js/collapsible.js"></script>
+  <!--SCRIPTS END-->
+
+  <script>
+    $(document).ready(function () {
+      $('.collapsible').collapsible({
+        accordion: true,
+      });
+    });
+  </script>
+</body>
+
 </html>

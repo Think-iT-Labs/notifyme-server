@@ -56,7 +56,8 @@ module.exports.routes = {
     view: 'terms'
   },
   'get /downloads': {
-    view: 'downloads'
+    controller: 'CliController',
+    action: 'downloads'
   },
   'get /downloads/:dist': {
     controller: 'CliController',
