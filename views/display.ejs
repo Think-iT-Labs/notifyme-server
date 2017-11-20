@@ -1,9 +1,11 @@
 <span class="badge teal darken-4 white-text">
   <%= cli.createdAt.toDateString()%>
 </span>
+<div style="padding: 0 8px;">
 <pre class="<%= cli.exitCode ? 'red' : 'pistachio'%>-text">
 $ <%= cli.cmd %>
 </pre>
 <pre>
 <%= cli.logs %>
 </pre>
+</div>
