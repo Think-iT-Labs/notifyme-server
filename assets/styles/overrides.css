@@ -8,3 +8,6 @@
 .collapsible-header.active {
     background-color: #98d66d;
 }
+.badge {
+    font-family: monospace;
+}

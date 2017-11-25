@@ -19,7 +19,7 @@ module.exports = {
     res.view('howto', {title: "How To", noFooter: true});
   },
   downloads: function(req, res) {
-    return res.redirect("https://github.com/Think-iT-Labs/notifyme");
+    return res.view('downloads', {title: "downloads", noFooter: true});
   },
   dist: function(req, res) {
     return res.redirect("https://github.com/Think-iT-Labs/notifyme");
